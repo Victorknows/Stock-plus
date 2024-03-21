@@ -48,6 +48,11 @@ def add_user(username, password, role='user'):
     conn.commit()
     conn.close()
     
-def add_product(name, quality, price, supplier, category, user_id):
+def add_product(name, quantity, price, supplier, category, user_id):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()        
+    c.execute('''INSER INTO proucts (name, quantity, price, supplier, category, user_id) VALUES(?, ?, ?, ?, ?, ?)''',
+              (name, quantity, price, supplier, category,user_id))
+    conn.commit()
+    conn.close()
+    
