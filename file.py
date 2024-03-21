@@ -109,3 +109,21 @@ def main():
             
             else:
                 print("Invalid username or password")
+                
+        elif choice == "2":
+            username = input("Create a new user: ")
+            password = generate_random_password()
+            print(f"Your password: {password}")
+            role = input("Enter your role (user/admin): ").lower()
+            if role not in ['user', 'admin']:
+                print("Invalid role")
+                role = 'user'
+            add_user(username, password, role)
+            print("User created Succesfully. Please login")
+                        
+        elif choice == "3":
+            print("Exiting.....")
+            return
+        
+        else: 
+            print("Invalid choice")        
