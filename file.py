@@ -56,3 +56,6 @@ def add_product(name, quantity, price, supplier, category, user_id):
     conn.commit()
     conn.close()
     
+def place_order(product_id, user_id, quantity):
+    conn =     
+    
