@@ -1,5 +1,5 @@
 import sqlite3
-
+import random
 
 def initialize_database():
     conn = sqlite3.connect('database.db')
@@ -80,4 +80,8 @@ def view_all_orders():
     orders = c.fetchall()
     conn.close()
     return orders 
-    
+
+def generate_random_password():
+    characters = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choice(characters) for i in range(length))
+
