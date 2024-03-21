@@ -1,70 +1,78 @@
 import sqlite3
 import random
+import string
+import hashlib
 
 def initialize_database():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
     
     c.execute('''CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTO INCREMENT,
-        username VARCHAR (200),
-        role VARCHAR (200),
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username VARCHAR(200),
+        role VARCHAR(200),
         created_at TIMESTAMP
-    )
-    ''')
+    )''')
     
-    c.execute('''
-              CREATE TABLE IF NOT EXISTS products(
-                  id INEGER PRIMARY KEY AUTOINCREMENT,
-                  name VARCHAR (200),
-                  category VARCHAR(200),
-                  amount INTEGER,
-                  quantity INTEGER,
-                  user_id integer [ref: > users.id])''')
-            
-    c.execute('''
-              CREATE TABLE IF NOT EXISTS orders(
-                  id INTEGER PRIMARYKEY AUTOINCREMENT,
-                  quantity INTEGER,
-                  order_date timestamp,
-                  status VARCHAR(200),
-                  user_id INTEGER [ref: >users.id],
-                  product_id INTEGER [ref: > products,id])''')          
-
-def authenicate(username, pasword):
-    conn= sqlite3.connect('database.id')
-    c = conn.cursor()
-    c.execute('''INSERT INTO user (username,password, role) VALUES (?,?,?)''',
-              (username, hashlib.sha256(password.encode()).hexdigest(), role)
-              ())
+    c.execute('''CREATE TABLE IF NOT EXISTS products (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name VARCHAR(200),
+        quantity INTEGER,
+        price FLOAT,
+        supplier VARCHAR(200),
+        category VARCHAR(200),
+        user_id INTEGER,
+        FOREIGN KEY(user_id) REFERENCES users(id)
+    )''')
+    
+    c.execute('''CREATE TABLE IF NOT EXISTS orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        quantity INTEGER,
+        order_date TIMESTAMP,
+        status VARCHAR(200),
+        user_id INTEGER,
+        product_id INTEGER,
+        FOREIGN KEY(user_id) REFERENCES users(id),
+        FOREIGN KEY(product_id) REFERENCES products(id)
+    )''')
+    
     conn.commit()
     conn.close()
-    
+
+def authenticate(username, password):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('''SELECT * FROM users WHERE username=? AND password=?''',
+              (username, hashlib.sha256(password.encode()).hexdigest()))
+    user = c.fetchone()
+    conn.close()
+    return user
+
 def add_user(username, password, role='user'):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
-    c.execute('''INSERT INTO user (username, password, role) VALUES (?, ?, ?)''',
+    c.execute('''INSERT INTO users (username, password, role) VALUES (?, ?, ?)''',
               (username, hashlib.sha256(password.encode()).hexdigest(), role))
     conn.commit()
     conn.close()
-    
+
 def add_product(name, quantity, price, supplier, category, user_id):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()        
-    c.execute('''INSER INTO proucts (name, quantity, price, supplier, category, user_id) VALUES(?, ?, ?, ?, ?, ?)''',
-              (name, quantity, price, supplier, category,user_id))
+    c.execute('''INSERT INTO products (name, quantity, price, supplier, category, user_id) VALUES (?, ?, ?, ?, ?, ?)''',
+              (name, quantity, price, supplier, category, user_id))
     conn.commit()
     conn.close()
-    
+
 def place_order(product_id, user_id, quantity):
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
     c.execute('''INSERT INTO orders (product_id, user_id, quantity, order_date, status)
-              VALUES(?,?,?, datetime('now), 'pending')''',
+              VALUES (?, ?, ?, datetime('now'), 'pending')''',
               (product_id, user_id, quantity))
-    conn.commit()    
+    conn.commit()
     conn.close()
-    
+
 def view_all_products():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
@@ -81,7 +89,7 @@ def view_all_orders():
     conn.close()
     return orders 
 
-def generate_random_password():
+def generate_random_password(length=12):
     characters = string.ascii_letters + string.digits + string.punctuation
     return ''.join(random.choice(characters) for i in range(length))
 
@@ -93,7 +101,7 @@ def main():
     
     while True:
         print("1. Login")
-        print("1. Signup")
+        print("2. Signup")
         print("3. Exit")
         
         choice = input("Enter your choice: ")
@@ -101,7 +109,7 @@ def main():
         if choice == "1":
             username = input("Enter your username: ")
             password = input("Input your password: ")
-            user = authenicate(username, password)
+            user = authenticate(username, password)
             
             if user:
                 print(f"Welcome {username}")
@@ -119,11 +127,14 @@ def main():
                 print("Invalid role")
                 role = 'user'
             add_user(username, password, role)
-            print("User created Succesfully. Please login")
+            print("User created Successfully. Please login")
                         
         elif choice == "3":
             print("Exiting.....")
             return
         
         else: 
-            print("Invalid choice")        
+            print("Invalid choice")
+
+if __name__ == "__main__":
+    main()
