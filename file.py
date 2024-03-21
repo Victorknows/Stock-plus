@@ -21,5 +21,13 @@ def initialize_database():
                   amount INTEGER,
                   quantity INTEGER,
                   user_id integer [ref: > users.id])''')
-              
+            
+    c.execute('''
+              CREATE TABLE IF NOT EXISTS orders(
+                  id INTEGER PRIMARYKEY AUTOINCREMENT,
+                  quantity INTEGER,
+                  order_date timestamp,
+                  status VARCHAR(200),
+                  user_id INTEGER [ref: >users.id],
+                  product_id INTEGER [ref: > products,id])''')          
 
