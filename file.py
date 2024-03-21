@@ -31,3 +31,11 @@ def initialize_database():
                   user_id INTEGER [ref: >users.id],
                   product_id INTEGER [ref: > products,id])''')          
 
+def authenicate(username,pasword):
+    conn= sqlite3.connect('database.id')
+    c = conn.cursor()
+    c.execute('''INSERT INTO user (username,password, role) VALUES (?,?,?)''',
+              (username, hashlib.sha256(password.encode()).hexdigest(), role)
+              ())
+    conn.commit()
+    conn.close()
