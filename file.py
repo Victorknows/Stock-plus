@@ -65,3 +65,11 @@ def place_order(product_id, user_id, quantity):
     conn.commit()    
     conn.close()
     
+def view_all_products():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('''SELECT * FROM products''')
+    products = c.fetchall()
+    conn.close()
+    return products    
+    
