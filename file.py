@@ -72,4 +72,12 @@ def view_all_products():
     products = c.fetchall()
     conn.close()
     return products    
+
+def view_all_orders():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('''SELECT * FROM orders''')
+    orders = c.fetchall()
+    conn.close()
+    return orders 
     
