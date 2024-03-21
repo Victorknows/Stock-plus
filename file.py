@@ -39,3 +39,8 @@ def authenicate(username,pasword):
               ())
     conn.commit()
     conn.close()
+    
+def add_user(username, password, role='user'):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+        
