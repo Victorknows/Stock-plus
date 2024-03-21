@@ -31,7 +31,7 @@ def initialize_database():
                   user_id INTEGER [ref: >users.id],
                   product_id INTEGER [ref: > products,id])''')          
 
-def authenicate(username,pasword):
+def authenicate(username, pasword):
     conn= sqlite3.connect('database.id')
     c = conn.cursor()
     c.execute('''INSERT INTO user (username,password, role) VALUES (?,?,?)''',
@@ -85,3 +85,27 @@ def generate_random_password():
     characters = string.ascii_letters + string.digits + string.punctuation
     return ''.join(random.choice(characters) for i in range(length))
 
+def main():
+    initialize_database()
+    
+    print("Welcome to StockPlus")
+    print("Please Login or Signup")
+    
+    while True:
+        print("1. Login")
+        print("1. Signup")
+        print("3. Exit")
+        
+        choice = input("Enter your choice: ")
+        
+        if choice == "1":
+            username = input("Enter your username: ")
+            password = input("Input your password: ")
+            user = authenicate(username, password)
+            
+            if user:
+                print(f"Welcome {username}")
+                break
+            
+            else:
+                print("Invalid username or password")
