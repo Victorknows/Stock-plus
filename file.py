@@ -57,5 +57,11 @@ def add_product(name, quantity, price, supplier, category, user_id):
     conn.close()
     
 def place_order(product_id, user_id, quantity):
-    conn =     
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('''INSERT INTO orders (product_id, user_id, quantity, order_date, status)
+              VALUES(?,?,?, datetime('now), 'pending')''',
+              (product_id, user_id, quantity))
+    conn.commit()    
+    conn.close()
     
