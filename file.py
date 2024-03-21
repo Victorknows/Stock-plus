@@ -19,6 +19,7 @@ def initialize_database():
                   name VARCHAR (200),
                   category VARCHAR(200),
                   amount INTEGER,
-                  quantity INTEGER,)''')
+                  quantity INTEGER,
+                  user_id integer [ref: > users.id])''')
               
 
